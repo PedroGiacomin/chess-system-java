@@ -8,11 +8,23 @@ import chess.pieces.Rook;
 
 public class ChessMatch {
 
+	private int turn;
+	private Color currentPlayer;
 	private Board board;
 	
 	public ChessMatch() {
 		board = new Board(8, 8);
+		turn = 1;
+		currentPlayer = Color.WHITE;
 		initialSetup();
+	}
+	
+	public int getTurn() {
+		return turn;
+	}
+	
+	public Color getCurrentPlayer() {
+		return currentPlayer;
 	}
 	
 	//Retorna uma matriz de peças de xadrez
@@ -25,6 +37,7 @@ public class ChessMatch {
 		}
 		return mat;
 	}
+	
 	//Retorna matriz de boolean com movimentos possíveis, para colorir eles
 	public boolean[][] possibleMoves(ChessPosition sourcePosition){
 		Position position = sourcePosition.toPosition();
@@ -39,6 +52,7 @@ public class ChessMatch {
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
 		Piece capturedPiece = makeMove(source, target);
+		nextTurn();
 		return (ChessPiece) capturedPiece;
 	}
 	
@@ -58,7 +72,11 @@ public class ChessMatch {
 		if(!board.thereIsAPiece(position)) {
 			throw new ChessException("There is no piece on source position");
 		}
-		if(!board.piece(position).isThereAnyPossibleMove()) {
+		if(currentPlayer != ((ChessPiece)board.piece(position)).getColor()) {
+			//Verifica se a peça selecionada é da cor do jogador atual
+			throw new ChessException("The chosen piece is not yours");
+		}
+		if(!board.piece(position).isThereAnyPossibleMove( )) {
 			throw new ChessException("There is no possible moves");
 		}
 	}
@@ -67,6 +85,12 @@ public class ChessMatch {
 		if (!board.piece(source).possibleMove(target)) {
 			throw new ChessException("The chosen piece can't move to target position");
 		}
+	}
+	
+	//Troca de turno com uma expressão ternária
+	private void nextTurn() {
+		turn++;
+		currentPlayer = (currentPlayer == Color.WHITE ? Color.BLACK : Color.WHITE); 
 	}
 	
 	//Instancia a posição de uma nova peça passando a posição em coord de xadrez
