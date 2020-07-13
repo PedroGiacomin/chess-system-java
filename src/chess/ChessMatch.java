@@ -25,6 +25,12 @@ public class ChessMatch {
 		}
 		return mat;
 	}
+	//Retorna matriz de boolean com movimentos possíveis, para colorir eles
+	public boolean[][] possibleMoves(ChessPosition sourcePosition){
+		Position position = sourcePosition.toPosition();
+		validateSourcePosition(position);
+		return board.piece(position).possibleMoves();
+	}
 	
 	//Retorna a peça que estava na posição target, após realizar o movimento
 	public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
