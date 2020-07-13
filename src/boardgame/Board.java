@@ -22,6 +22,7 @@ public class Board {
 		return columns;
 	}
 	
+	//Retorna a peça na posição fornecida da matriz pieces
 	public Piece piece(int row, int column) {
 		if(!positionExists(row, column)) {
 			throw new BoardException("Position not on the board");
@@ -36,6 +37,7 @@ public class Board {
 		return pieces[position.getRow()][position.getColumn()];
 	}
 	
+	//Posiciona uma peça em uma posição do tabuleiro na matriz pieces
 	public void placePiece(Piece piece, Position position) {
 		if(thereIsAPiece(position)) {
 			throw new BoardException("There is already a piece on position " + position);
@@ -44,13 +46,20 @@ public class Board {
 		piece.position = position;
 	}
 	
+	/*
+	 Atribui o valor null à posição dada na matriz pieces, retirando-se 
+	 assim a peça que estava na posição, atribuindo o valor null também 
+	 à posição da peça dada 
+	 */
 	public Piece removePiece(Position position) {
+		//Prog defensiva
 		if (!positionExists(position)) {
 			throw new BoardException("Position not on the board");
 		}
 		if (piece(position) == null) {
 			return null;
 		}
+		//Atribui a aux a peça na posição fornecida
 		Piece aux = piece(position);
 		aux.position = null;
 		pieces[position.getRow()][position.getColumn()] = null;

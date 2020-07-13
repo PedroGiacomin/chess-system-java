@@ -35,6 +35,7 @@ public class UI {
 		System.out.flush();
 	}
 
+	//Lê a posição do usuário
 	public static ChessPosition readChessPosition(Scanner sc) {
 		try {
 			String s = sc.nextLine();
@@ -47,6 +48,7 @@ public class UI {
 		}
 	}
 	
+	//Imprime o tabuleiro 
 	public static void printBoard(ChessPiece[][] pieces) {
 		for (int i = 0; i < pieces.length; i++) {
 			System.out.print((8 - i) + " ");
@@ -58,6 +60,7 @@ public class UI {
 		System.out.println("  A B C D E F G H");
 	}
 
+	//Imprime cada peça de xadrez
 	private static void printPiece(ChessPiece piece) {
 		if (piece == null) {
 			System.out.print("-");
