@@ -71,6 +71,8 @@ public class UI {
 		else {
 			System.out.println("CHECKMATE!!");
 			System.out.println("Winner: " + chessMatch.getCurrentPlayer());
+			System.out.println(chessMatch.opponent(chessMatch.getCurrentPlayer()) + 
+					ANSI_RED + " BUSTED" + ANSI_RESET);
 		}
 		System.out.println();
 	}
@@ -78,25 +80,25 @@ public class UI {
 	//Imprime o tabuleiro 
 	public static void printBoard(ChessPiece[][] pieces) {
 		for (int i = 0; i < pieces.length; i++) {
-			System.out.print((8 - i) + " ");
+			System.out.print(ANSI_CYAN + (8 - i) + ANSI_RESET + " ");
 			for (int j = 0; j < pieces.length; j++) {
 				printPiece(pieces[i][j], false);
 			}
 			System.out.println();
 		}
-		System.out.println("  A B C D E F G H");
+		System.out.println(ANSI_CYAN + "  A B C D E F G H" + ANSI_RESET);
 	}
 	
 	//Imprime tabuleiro colorindo posições possíveis
 	public static void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves) {
 		for (int i = 0; i < pieces.length; i++) {
-			System.out.print((8 - i) + " ");
+			System.out.print(ANSI_CYAN + (8 - i) + ANSI_RESET + " ");
 			for (int j = 0; j < pieces.length; j++) {
 				printPiece(pieces[i][j], possibleMoves[i][j]);
 			}
 			System.out.println();
 		}
-		System.out.println("  A B C D E F G H");
+		System.out.println(ANSI_CYAN + "  A B C D E F G H" + ANSI_RESET);
 	}
 
 	//Imprime cada peça de xadrez
