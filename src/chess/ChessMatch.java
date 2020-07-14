@@ -16,6 +16,7 @@ public class ChessMatch {
 	private Color currentPlayer;
 	private Board board;
 	private boolean check;
+	private boolean checkMate;
 	
 	/*Essas são duas listas para manter o controle das peças que estão no tabuleiro ou
 	 fora dele (capturadas). As peças são adicionadas às listas nas situações correspondentes,
@@ -41,6 +42,10 @@ public class ChessMatch {
 	
 	public boolean getCheck() {
 		return check;
+	}
+	
+	public boolean getCheckMate() {
+		return checkMate;
 	}
 	
 	//Retorna uma matriz de peças de xadrez
@@ -77,8 +82,14 @@ public class ChessMatch {
 		
 		//Se o oponente ficar em cheque, atualiza o atributo check para true
 		check = (testCheck(opponent(currentPlayer))) ? true : false;
-				
-		nextTurn();
+		
+		//Antes de mudar o turno, verifica se houve checkMate
+		if (testCheckMate(opponent(currentPlayer))) {
+			checkMate = true;
+		}
+		else {
+			nextTurn();
+		}
 		return (ChessPiece) capturedPiece;
 	}
 	
@@ -166,6 +177,37 @@ public class ChessMatch {
 		return false;
 	}
 	
+	private boolean testCheckMate(Color color) {
+		if(!testCheck(color)) {
+			return false;
+		}
+		//Dá uma lista de peças da cor do jogador atual que estão no tabuleiro
+		List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == color).collect(Collectors.toList());
+		for (Piece p : list) {
+			//Dá uma matriz de boolean de todos os movimentos possíveis da peça em questão
+			boolean[][] mat = p.possibleMoves();
+			for(int i = 0; i < board.getRows(); i++) {
+				for(int j = 0; j < board.getColumns(); j++) {
+					//Testa se é um movimento possível
+					if(mat[i][j]) {
+						//Move a peça em questão para a posição que está sendo testada
+						Position source = ((ChessPiece)p).getChessPosition().toPosition();
+						Position target = new Position(i, j);
+						Piece capturedPiece = makeMove(source, target);
+						//Testa se o rei da cor em questão ainda está em xeque
+						boolean testCheck = testCheck(color);
+						undoMove(source, target, capturedPiece);
+						//Se não estiver em xeque mesmo assim, retorna falso para xequemate
+						if(!testCheck) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
 	//Instancia a posição de uma nova peça passando a posição em coord de xadrez
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column,row).toPosition());
@@ -173,18 +215,11 @@ public class ChessMatch {
 	}
 	
 	private void initialSetup() {
-		placeNewPiece('C', 1, new Rook(board, Color.WHITE));
-		placeNewPiece('E', 1, new Rook(board, Color.WHITE));	        
-		placeNewPiece('D', 1, new King(board, Color.WHITE));	        
-        placeNewPiece('E', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('C', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('D', 2, new Rook(board, Color.WHITE));
+		placeNewPiece('H', 7, new Rook(board, Color.WHITE));
+		placeNewPiece('D', 1, new Rook(board, Color.WHITE));	        
+		placeNewPiece('E', 1, new King(board, Color.WHITE));	        
 
-        placeNewPiece('C', 7, new Rook(board, Color.BLACK));
-        placeNewPiece('C', 8, new Rook(board, Color.BLACK));
-        placeNewPiece('D', 7, new Rook(board, Color.BLACK));
-        placeNewPiece('E', 7, new Rook(board, Color.BLACK));
-        placeNewPiece('E', 8, new Rook(board, Color.BLACK));
-        placeNewPiece('D', 8, new King(board, Color.BLACK));
+        placeNewPiece('B', 8, new Rook(board, Color.BLACK));
+        placeNewPiece('A', 8, new King(board, Color.BLACK));
 	}
 }
